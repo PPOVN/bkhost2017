@@ -1,0 +1,108 @@
+# Uncomment the following to prevent the httpoxy vulnerability
+# See: https://httpoxy.org/
+#<IfModule mod_headers.c>
+#    RequestHeader unset Proxy
+#</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteRule    ^$    webroot/    [L]
+    RewriteRule    (.*) webroot/$1    [L]
+</IfModule>
+
+# Enable compression
+<IfModule mod_deflate.c>
+#AddOutputFilter DEFLATE css js
+AddOutputFilter DEFLATE css js png jpg gif
+AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript text/javascript
+ExpiresActive On
+ExpiresByType application/x-javascript A2592000
+
+  # Remove browser bugs (only needed for really old browsers)
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+  Header append Vary User-Agent
+</IfModule>
+# END Enable compression
+
+# Enable compression
+<ifModule mod_gzip.c>
+mod_gzip_on Yes
+mod_gzip_dechunk Yes
+mod_gzip_item_include file .(html?|txt|css|js|php|pl)$
+mod_gzip_item_include handler ^cgi-script$
+mod_gzip_item_include mime ^text/.*
+mod_gzip_item_include mime ^application/x-javascript.*
+mod_gzip_item_exclude mime ^image/.*
+mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</ifModule>
+# END Enable compression
+
+## EXPIRES CACHING ##
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/jpg "access 1 year"
+ExpiresByType image/jpeg "access 1 year"
+ExpiresByType image/gif "access 1 year"
+ExpiresByType image/png "access 1 year"
+ExpiresByType text/css "access 1 month"
+ExpiresByType text/html "access 1 month"
+ExpiresByType application/pdf "access 1 month"
+ExpiresByType text/x-javascript "access 1 month"
+ExpiresByType application/x-shockwave-flash "access 1 month"
+ExpiresByType image/x-icon "access 1 year"
+ExpiresDefault "access 1 month"
+</IfModule>
+## EXPIRES CACHING ##
+
+# One month for most static assets
+#<filesMatch ".(css|jpg|jpeg|png|gif|js|ico)$">
+#Header set Cache-Control "max-age=2628000, public"
+#</filesMatch>
+<IfModule mod_headers.c>
+  <filesmatch "\.(ico|flv|jpg|jpeg|png|gif|css|swf)$">
+  Header set Cache-Control "max-age=2678400, public"
+  </filesmatch>
+  <filesmatch "\.(html|htm)$">
+  Header set Cache-Control "max-age=7200, private, must-revalidate"
+  </filesmatch>
+  <filesmatch "\.(pdf)$">
+  Header set Cache-Control "max-age=86400, public"
+  </filesmatch>
+  <filesmatch "\.(js)$">
+  Header set Cache-Control "max-age=2678400, private"
+  </filesmatch>
+</IfModule>
+
+## REDIRECT URL
+RedirectMatch 301 ^/may-chu(/?)(.*) /server$1$2
+RedirectMatch 301 ^/may-chu-hp(/?)(.*) /server$1$2
+RedirectMatch 301 ^/may-chu-dell(/?)(.*) /server$1$2
+RedirectMatch 301 ^/may-chu/may-chu-hp(/?)(.*) /server$1$2
+RedirectMatch 301 ^/may-chu/may-chu-ibm(/?)(.*) /server$1$2
+RedirectMatch 301 ^/may-chu/may-chu-dell(/?)(.*) /server$1$2
+RedirectMatch 301 ^/vps/cloud-vps(/?)(.*) /server/cloud-vps$1$2
+RedirectMatch 301 ^/vps/thue-vps(/?)(.*) /server/cloud-vps$1$2
+RedirectMatch 301 ^/vps/cloud-storage(/?)(.*) /server/cloud-bkhost$1$2
+RedirectMatch 301 ^/dedicated-server(/?)(.*) /server/dedicate-server$1$2
+RedirectMatch 301 ^/hosting/hosting-linux(/?)(.*) /hosting$1$2
+RedirectMatch 301 ^/hosting/supper-ssd-hosting-linux(/?)(.*) /hosting$1$2
+RedirectMatch 301 ^/hosting/reseller-ssd-hosting(/?)(.*) /hosting$1$2
+RedirectMatch 301 ^/reseller-ssd-hosting(/?)(.*) /hosting$1$2
+RedirectMatch 301 ^/supper-ssd-hosting-linux(/?)(.*) /hosting$1$2
+RedirectMatch 301 ^/chuong-trinh-khuyen-mai(/?)(.*) /pages/khuyen-mai$1$2
+RedirectMatch 301 ^/ban-quyen(/?)(.*) /software$1$2
+RedirectMatch 301 ^/ban-quyen/cloudlinux-os(/?)(.*) /software$1$2
+RedirectMatch 301 ^/ban-quyen/cpanel(/?)(.*) /software$1$2
+RedirectMatch 301 ^/ban-quyen/parallels-plesk(/?)(.*) /software$1$2
+RedirectMatch 301 ^/thong-tin-ten-mien/bieu-mau-dang-ky(/?)(.*) /domain/bieu-mau-ho-so-dang-ky-ten-mien$1$2
+RedirectMatch 301 ^/thong-tin-ten-mien/quy-trinh-dang-ky(/?)(.*) /domain/quy-trinh-dang-ky-ten-mien$1$2
+RedirectMatch 301 ^/services/cho-dat-may-chu(/?)(.*) /server/colo$1$2
+RedirectMatch 301 ^/e-mail(/?)(.*) /email$1$2
+RedirectMatch 301 ^/e-mail/email-doanh-nghiep(/?)(.*) /email$1$2
+RedirectMatch 301 ^/email/email-googles-apps(/?)(.*) /email$1$2
+RedirectMatch 301 ^/email/email-server-rieng(/?)(.*) /email$1$2
+RedirectMatch 301 ^/email-doanh-nghiep(/?) /email$1
+RedirectMatch 301 ^/email-server-rieng(/?) /email$1
+RedirectMatch 301 ^/email-googles-apps(/?) /email$1
